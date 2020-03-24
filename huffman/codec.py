@@ -148,18 +148,29 @@ class Codec:
         L'idée est que python store sur des bytes par défaut. Pour vraiment pouvoir compresser
         le fichier il faut donc prendre notre séquence encodée et la découper en portions de 8 bits
         qu'on assigne à un byte. On réduira ainsi la taille en mémoire par 8.
+        Il faut cependant faire attention car notre la longueur de notre encodage n'est pas forcément 
+        divisible par 8, auquel cas il faut ajouter des 0 à la fin qu'il faudra pas oublier d'enlever
+        en décodant. Pour ne pas perdre l'information du nombre de 0 qu'on a rajouté, on ajoute un 
+        byte à la fin avec des 0 et le nombre de 0 rajouté en binaire.
         '''
+        coded = self.encode(text)
+        length = len(coded)
+        nb_zeros_rajoute = 8 - length % 8
         binary_encoded = bytearray()
-        coded = self.encode()
-        length, nb_bytes = len(coded), len(coded)//8
-        for i in range(nb_bytes):
-            current_byte = coded[i*8:(i+1)*8]
-            binary_encoded.append(bytes(current_byte))
-        final_byte = coded[nb_bytes*8:length]
-        binary_encoded.append(final_byte)
+        for _ in range(nb_zeros_rajoute): #on rajoute les zéros au codage en string
+            coded += '0'
+        byte_avec_info = "{0:08b}".format(nb_zeros_rajoute) # le byte avec le nb de 0 rajouté
+        coded = byte_avec_info + coded
+
+        for i in range(0, len(coded)//8, 8): #on passe en format byte
+            current_byte = coded[i:i+8]
+            binary_encoded.append(int(current_byte, base = 2))  #rajouter sur un seul byte
         return binary_encoded
 
-    def decode_bin(code: bytes):
+    def decode_bin(self, code: bytearray):
+        '''
+        Le decodage est assez complexe.
+        '''
         pass
 
 pass
