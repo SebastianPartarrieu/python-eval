@@ -99,6 +99,7 @@ class TreeBuilder:
         self.stack = []  # pour que plusieurs appels sur le même ojet TreeBuiler ne fausse rien
         return final_tree
 
+
 pass
 
 
@@ -157,14 +158,16 @@ class Codec:
         length = len(coded)
         nb_zeros_rajoute = 8 - length % 8
         binary_encoded = bytearray()
-        for _ in range(nb_zeros_rajoute): #on rajoute les zéros au codage en string
+        for _ in range(nb_zeros_rajoute):  # on rajoute les zéros au codage en string
             coded += '0'
-        byte_avec_info = "{0:08b}".format(nb_zeros_rajoute) # le byte avec le nb de 0 rajouté
+        # le byte avec le nb de 0 rajouté
+        byte_avec_info = "{0:08b}".format(nb_zeros_rajoute)
         coded = byte_avec_info + coded
 
-        for i in range(0, len(coded)//8, 8): #on passe en format byte
+        for i in range(0, len(coded)//8, 8):  # on passe en format byte
             current_byte = coded[i:i+8]
-            binary_encoded.append(int(current_byte, base = 2))  #rajouter sur un seul byte
+            # rajouter sur un seul byte
+            binary_encoded.append(int(current_byte, base=2))
         return binary_encoded
 
     def decode_bin(self, code: bytearray):
@@ -173,5 +176,5 @@ class Codec:
         '''
         pass
 
-pass
 
+pass
